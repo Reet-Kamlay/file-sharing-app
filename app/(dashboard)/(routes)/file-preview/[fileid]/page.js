@@ -22,7 +22,9 @@ const containerVariants = {
   },
 };
 
-const FilePreview = ({ params: { fileid } }) => {
+const FilePreview = ({ params }) => {
+  const { fileid } = params;
+
   const db = getFirestore(app);
   const [file, setFile] = useState(null);
 
