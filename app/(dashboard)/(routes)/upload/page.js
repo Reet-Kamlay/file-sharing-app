@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import UploadForm from "./_components/UploadForm";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
 import { app } from "@/firebaseConfig";
 import {
   getDownloadURL,
@@ -50,20 +50,22 @@ const Upload = () => {
   };
 
   const saveInfo = async (file, fileUrl) => {
-    const docId = generateRandomString().toString();
-    await setDoc(doc(db, "uploadedFile", docId), {
-      fileName: file?.name,
-      fileSize: file?.size,
-      fileType: file?.type,
-      fileUrl: fileUrl,
-      userEmail: user?.primaryEmailAddress.emailAddress,
-      userName: user?.fullName,
-      password: "",
-      id: docId,
-      shortUrl: process.env.NEXT_PUBLIC_BASE_URL + docId,
-    });
-    setFileDocId(docId);
-  };
+  const docId = generateRandomString().toString();
+  await setDoc(doc(db, "uploadedFile", docId), {
+    fileName: file?.name,
+    fileSize: file?.size,
+    fileType: file?.type,
+    fileUrl: fileUrl,
+    userEmail: user?.primaryEmailAddress.emailAddress,
+    userName: user?.fullName,
+    password: "",
+    id: docId,
+    shortUrl: process.env.NEXT_PUBLIC_BASE_URL + docId,
+    timestamp: serverTimestamp(), // ✅ This line is the fix
+  });
+  setFileDocId(docId);
+};
+
   useEffect(() => {
   if (fileDocId) {
     const timeout = setTimeout(() => {
