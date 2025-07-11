@@ -5,9 +5,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req) {
   const body = await req.json();
-  const { to, fileName, fileid } = body;
+  const { to, fileName, fileId } = body;
 
-  const fileUrl = `http://localhost:3000/f/${fileid}`; // 👈 updated link format
+  const fileUrl = `http://localhost:3000/f/${fileId}`; // 👈 updated link format
 
   try {
     const data = await resend.emails.send({

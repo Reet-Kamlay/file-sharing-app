@@ -2,7 +2,15 @@
 import React, { useState } from "react";
 import { updateDoc, doc, getFirestore } from "firebase/firestore";
 import { app } from "@/firebaseConfig";
-import { Lock, Mail, Save, Link } from "lucide-react";
+import {
+  Lock,
+  Mail,
+  Save,
+  Link,
+  ClipboardCopy,
+  Check,
+  FileText,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 const childVariants = {
@@ -14,6 +22,7 @@ const FileShareForm = ({ file, fileId }) => {
   const db = getFirestore(app);
   const [password, setPassword] = useState(file?.password || "");
   const [email, setEmail] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const handleSavePassword = async () => {
     try {
@@ -36,7 +45,7 @@ const FileShareForm = ({ file, fileId }) => {
         body: JSON.stringify({
           to: email,
           fileName: file?.fileName,
-          fileId: fileId, // 👈 only fileId, not full fileUrl
+          fileId: fileId,
         }),
       });
 
@@ -53,9 +62,32 @@ const FileShareForm = ({ file, fileId }) => {
     }
   };
 
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(`http://localhost:3000/f/${fileId}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+    const date = timestamp.toDate();
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const isImage = (name) => {
+    const ext = name?.split(".").pop()?.toLowerCase();
+    return ["jpg", "jpeg", "png", "gif", "webp"].includes(ext);
+  };
+
   return (
     <motion.div variants={childVariants} className="flex flex-col gap-6">
-      {/* Short Link */}
+      
+
+      {/* Short URL and Copy Button */}
       <div>
         <label className="text-sm font-semibold text-gray-700">Short URL</label>
         <div className="flex items-center bg-gray-100 px-3 py-2 rounded-xl mt-1 shadow-sm">
@@ -65,10 +97,17 @@ const FileShareForm = ({ file, fileId }) => {
             value={`http://localhost:3000/f/${fileId}`}
             className="bg-transparent w-full text-sm text-gray-800 outline-none"
           />
+          <button onClick={handleCopyLink} className="ml-2">
+            {copied ? (
+              <Check className="w-5 h-5 text-green-600" />
+            ) : (
+              <ClipboardCopy className="w-5 h-5 text-gray-500" />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Password */}
+      {/* Password Section */}
       <div className="space-y-2">
         <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
           <input
@@ -102,9 +141,11 @@ const FileShareForm = ({ file, fileId }) => {
         </button>
       </div>
 
-      {/* Email */}
+      {/* Email Section */}
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700">Send File to Email</label>
+        <label className="text-sm font-semibold text-gray-700">
+          Send File to Email
+        </label>
         <div className="flex items-center border border-gray-300 px-3 py-2 rounded-xl bg-white shadow-sm">
           <Mail className="w-4 h-4 mr-2 text-gray-500" />
           <input
