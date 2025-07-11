@@ -7,7 +7,7 @@ export async function POST(req) {
   const body = await req.json();
   const { to, fileName, fileId } = body;
 
-  const fileUrl = `http://localhost:3000/f/${fileId}`; // 👈 updated link format
+  const fileUrl = `https://file-sharing-app-henna-pi.vercel.app/f/${fileId}`; // 👈 updated link format
 
   try {
     const data = await resend.emails.send({

@@ -63,7 +63,7 @@ const FileShareForm = ({ file, fileId }) => {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/f/${fileId}`);
+    navigator.clipboard.writeText(`https://file-sharing-app-henna-pi.vercel.app/f/${fileId}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
