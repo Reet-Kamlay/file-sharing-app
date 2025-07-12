@@ -8,7 +8,6 @@ const SideNav = ({ closeSideBar, isMobile }) => {
   const menuList = [
     { id: 1, name: "Upload", icon: Upload, path: "/upload" },
     { id: 2, name: "Files", icon: File, path: "/files" },
-    { id: 3, name: "Upgrade", icon: Shield, path: "/upgrade" },
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
